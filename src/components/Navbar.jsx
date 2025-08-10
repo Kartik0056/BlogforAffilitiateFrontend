@@ -21,6 +21,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showCategories, setShowCategories] = useState(false)
   const searchRef = useRef(null)
+  const dropdownRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -82,13 +83,21 @@ const Navbar = () => {
             <div
               className="relative"
               onMouseEnter={() => setShowCategories(true)}
-              onMouseLeave={() => setShowCategories(false)}
+              onMouseLeave={(e) => {
+                if (!dropdownRef.current.contains(e.relatedTarget)) {
+                  setShowCategories(false)
+                }
+              }}
             >
               <button className="flex items-center text-gray-700 hover:text-primary-500">
                 Category <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               {showCategories && (
-                <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg mt-2 w-48 py-2">
+                <div
+                  ref={dropdownRef}
+                  onMouseLeave={() => setShowCategories(false)}
+                  className="absolute top-full left-0 bg-white shadow-lg rounded-lg mt-1 w-48 py-2 z-50"
+                >
                   {categories.map((cat) => (
                     <Link
                       key={cat}
@@ -139,8 +148,7 @@ const Navbar = () => {
                   to="/dashboard"
                   className="flex items-center space-x-1 text-gray-700 hover:text-primary-500"
                 >
-                  <User className="h-5 w-5" />
-                  <span>Dashboard</span>
+                  <User className="h-6 w-6" />
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -152,9 +160,9 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
+                className="text-gray-700 hover:text-primary-500"
               >
-                Login
+                <User className="h-6 w-6" />
               </Link>
             )}
           </div>
@@ -167,80 +175,6 @@ const Navbar = () => {
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t space-y-4">
-            <Link to="/" className="text-gray-700 hover:text-primary-500">
-              Home
-            </Link>
-
-            {/* Mobile Categories */}
-            <details>
-              <summary className="cursor-pointer text-gray-700">
-                Category
-              </summary>
-              <div className="mt-2 space-y-2">
-                {categories.map((cat) => (
-                  <Link
-                    key={cat}
-                    to={`/category/${cat.toLowerCase().replace(' ', '-')}`}
-                    className="block text-gray-700 hover:text-primary-500"
-                  >
-                    {cat}
-                  </Link>
-                ))}
-              </div>
-            </details>
-
-            {/* Search */}
-            {!isSearchOpen && (
-              <Search
-                className="h-5 w-5 text-gray-600 cursor-pointer"
-                onClick={() => setIsSearchOpen(true)}
-              />
-            )}
-            {isSearchOpen && (
-              <form onSubmit={handleSearch} className="flex">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg"
-                />
-                <button
-                  type="submit"
-                  className="bg-primary-500 text-white px-4 py-2 rounded-r-lg"
-                >
-                  <Search className="h-5 w-5" />
-                </button>
-              </form>
-            )}
-
-            {/* Auth */}
-            {isLoggedIn ? (
-              <>
-                <Link to="/dashboard" className="text-gray-700 hover:text-primary-500">
-                  Dashboard
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-gray-700 hover:text-red-500"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-primary-500 text-white px-4 py-2 rounded-lg"
-              >
-                Login
-              </Link>
-            )}
-          </div>
-        )}
       </div>
     </nav>
   )
