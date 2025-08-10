@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, Menu, X, User } from 'lucide-react'
+import { Search, Menu, X, User, ChevronDown } from 'lucide-react'
 import gsap from 'gsap'
 import Cookies from 'js-cookie'
 import logo from "../assets/logo.png"
+
 const categories = [
   'Mobiles',
   'Electronics',
@@ -15,26 +16,40 @@ const categories = [
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showCategories, setShowCategories] = useState(false)
+  const searchRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     const token = Cookies.get('token')
     setIsLoggedIn(!!token)
 
-    // Navbar animation
-    gsap.fromTo('.navbar', 
+    gsap.fromTo(
+      '.navbar',
       { y: -100, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }
     )
   }, [])
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      gsap.fromTo(
+        searchRef.current,
+        { x: 200, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }
+      )
+    }
+  }, [isSearchOpen])
 
   const handleSearch = (e) => {
     e.preventDefault()
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`)
       setSearchQuery('')
+      setIsSearchOpen(false)
     }
   }
 
@@ -50,49 +65,76 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-           
-              <img
-                src={logo}
-                alt="Dhamaka Deals Logo"
-                className="w-20 h-20 rounded-lg object-contain"
-              />
-
+            <img
+              src={logo}
+              alt="Dhamaka Deals Logo"
+              className="w-[81px] h-[56px] object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-700 hover:text-primary-500 transition-colors">
+            <Link to="/" className="text-gray-700 hover:text-primary-500">
               Home
             </Link>
-            {categories.map((category) => (
-              <Link
-                key={category}
-                to={`/category/${category.toLowerCase().replace(' ', '-')}`}
-                className="text-gray-700 hover:text-primary-500 transition-colors"
-              >
-                {category}
-              </Link>
-            ))}
+
+            {/* Category dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setShowCategories(true)}
+              onMouseLeave={() => setShowCategories(false)}
+            >
+              <button className="flex items-center text-gray-700 hover:text-primary-500">
+                Category <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {showCategories && (
+                <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg mt-2 w-48 py-2">
+                  {categories.map((cat) => (
+                    <Link
+                      key={cat}
+                      to={`/category/${cat.toLowerCase().replace(' ', '-')}`}
+                      className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                    >
+                      {cat}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hidden md:flex items-center">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search blogs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          {/* Search Icon + Input */}
+          <div className="hidden md:flex items-center relative">
+            {!isSearchOpen && (
+              <Search
+                className="h-5 w-5 text-gray-600 cursor-pointer"
+                onClick={() => setIsSearchOpen(true)}
               />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-            </div>
-          </form>
+            )}
+            {isSearchOpen && (
+              <form
+                ref={searchRef}
+                onSubmit={handleSearch}
+                className="flex items-center ml-2"
+              >
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <button type="submit" className="ml-2 text-primary-500">
+                  <Search className="h-5 w-5" />
+                </button>
+              </form>
+            )}
+          </div>
 
-          {/* Auth Button */}
+          {/* Auth */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
-              <div className="flex items-center space-x-2">
+              <>
                 <Link
                   to="/dashboard"
                   className="flex items-center space-x-1 text-gray-700 hover:text-primary-500"
@@ -106,18 +148,18 @@ const Navbar = () => {
                 >
                   Logout
                 </button>
-              </div>
+              </>
             ) : (
               <Link
                 to="/login"
-                className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
               >
                 Login
               </Link>
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2"
@@ -128,56 +170,75 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col space-y-4">
-              <Link to="/" className="text-gray-700 hover:text-primary-500">
-                Home
-              </Link>
-              {categories.map((category) => (
-                <Link
-                  key={category}
-                  to={`/category/${category.toLowerCase().replace(' ', '-')}`}
-                  className="text-gray-700 hover:text-primary-500"
-                >
-                  {category}
-                </Link>
-              ))}
+          <div className="md:hidden py-4 border-t space-y-4">
+            <Link to="/" className="text-gray-700 hover:text-primary-500">
+              Home
+            </Link>
+
+            {/* Mobile Categories */}
+            <details>
+              <summary className="cursor-pointer text-gray-700">
+                Category
+              </summary>
+              <div className="mt-2 space-y-2">
+                {categories.map((cat) => (
+                  <Link
+                    key={cat}
+                    to={`/category/${cat.toLowerCase().replace(' ', '-')}`}
+                    className="block text-gray-700 hover:text-primary-500"
+                  >
+                    {cat}
+                  </Link>
+                ))}
+              </div>
+            </details>
+
+            {/* Search */}
+            {!isSearchOpen && (
+              <Search
+                className="h-5 w-5 text-gray-600 cursor-pointer"
+                onClick={() => setIsSearchOpen(true)}
+              />
+            )}
+            {isSearchOpen && (
               <form onSubmit={handleSearch} className="flex">
                 <input
                   type="text"
-                  placeholder="Search blogs..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg"
                 />
                 <button
                   type="submit"
-                  className="bg-primary-500 text-white px-4 py-2 rounded-r-lg hover:bg-primary-600"
+                  className="bg-primary-500 text-white px-4 py-2 rounded-r-lg"
                 >
                   <Search className="h-5 w-5" />
                 </button>
               </form>
-              {isLoggedIn ? (
-                <div className="flex flex-col space-y-2">
-                  <Link to="/dashboard" className="text-gray-700 hover:text-primary-500">
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="text-left text-gray-700 hover:text-red-500"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  to="/login"
-                  className="bg-primary-500 text-white px-4 py-2 rounded-lg text-center hover:bg-primary-600"
-                >
-                  Login
+            )}
+
+            {/* Auth */}
+            {isLoggedIn ? (
+              <>
+                <Link to="/dashboard" className="text-gray-700 hover:text-primary-500">
+                  Dashboard
                 </Link>
-              )}
-            </div>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-red-500"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-primary-500 text-white px-4 py-2 rounded-lg"
+              >
+                Login
+              </Link>
+            )}
           </div>
         )}
       </div>
