@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Search, Menu, X, User } from 'lucide-react'
 import gsap from 'gsap'
 import Cookies from 'js-cookie'
-
+import logo from "../assets/logo.png"
 const categories = [
   'Mobiles',
   'Electronics',
@@ -50,10 +50,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">DD</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">Dhamaka Deals</span>
+           
+              <img
+                src={logo}
+                alt="Dhamaka Deals Logo"
+                className="w-10 h-10 rounded-lg object-contain"
+              />
+
           </Link>
 
           {/* Desktop Navigation */}
