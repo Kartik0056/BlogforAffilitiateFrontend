@@ -21,7 +21,6 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showCategories, setShowCategories] = useState(false)
   const searchRef = useRef(null)
-  const dropdownRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -79,30 +78,25 @@ const Navbar = () => {
               Home
             </Link>
 
-            {/* Category dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setShowCategories(true)}
-              onMouseLeave={(e) => {
-                if (!dropdownRef.current.contains(e.relatedTarget)) {
-                  setShowCategories(false)
-                }
-              }}
-            >
-              <button className="flex items-center text-gray-700 hover:text-primary-500">
+            {/* Category dropdown - click based */}
+            <div className="relative">
+              <button
+                onClick={() => setShowCategories((prev) => !prev)}
+                className="flex items-center text-gray-700 hover:text-primary-500 focus:outline-none"
+              >
                 Category <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               {showCategories && (
                 <div
-                  ref={dropdownRef}
-                  onMouseLeave={() => setShowCategories(false)}
                   className="absolute top-full left-0 bg-white shadow-lg rounded-lg mt-1 w-48 py-2 z-50"
+                  onMouseLeave={() => setShowCategories(false)}
                 >
                   {categories.map((cat) => (
                     <Link
                       key={cat}
                       to={`/category/${cat.toLowerCase().replace(' ', '-')}`}
                       className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                      onClick={() => setShowCategories(false)}
                     >
                       {cat}
                     </Link>
@@ -149,6 +143,7 @@ const Navbar = () => {
                   className="flex items-center space-x-1 text-gray-700 hover:text-primary-500"
                 >
                   <User className="h-6 w-6" />
+                  <span>Dashboard</span>
                 </Link>
                 <button
                   onClick={handleLogout}
