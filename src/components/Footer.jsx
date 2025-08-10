@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Facebook, Twitter, Instagram, Youtube, Mail } from 'lucide-react'
+import logo from "../assets/logo.png"
 
 const Footer = () => {
   const categories = [
@@ -17,11 +18,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">T</span>
-              </div>
-              <span className="text-xl font-bold">TechBlog</span>
+            <Link to="/" className="flex items-center space-x-2 mb-4">         
+                           <img
+                             src={logo}
+                             alt="Dhamaka Deals Logo"
+                             className="w-20 h-20 rounded-lg object-contain"
+                           />
             </Link>
             <p className="text-gray-400 mb-6 max-w-md">
               Your trusted source for the latest tech reviews, product comparisons, 
