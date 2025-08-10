@@ -51,9 +51,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">T</span>
+              <span className="text-white font-bold text-lg">DD</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">TechBlog</span>
+            <span className="text-xl font-bold text-gray-900">Dhamaka Deals</span>
           </Link>
 
           {/* Desktop Navigation */}
