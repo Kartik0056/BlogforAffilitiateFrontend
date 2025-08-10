@@ -92,11 +92,11 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 TechBlog. All rights reserved.
+            © 2025 Dhamaka Deals. All rights reserved.
           </p>
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
             <Mail className="h-4 w-4 text-gray-400" />
-            <span className="text-gray-400 text-sm">contact@techblog.com</span>
+            <span className="text-gray-400 text-sm">kartikkumar151998@gmail.com.com</span>
           </div>
         </div>
       </div>
