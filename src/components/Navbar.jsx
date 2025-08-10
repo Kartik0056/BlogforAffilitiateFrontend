@@ -54,7 +54,7 @@ const Navbar = () => {
               <img
                 src={logo}
                 alt="Dhamaka Deals Logo"
-                className="w-10 h-10 rounded-lg object-contain"
+                className="w-20 h-20 rounded-lg object-contain"
               />
 
           </Link>
