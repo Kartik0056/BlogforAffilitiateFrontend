@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2 rounded-lg">
-            <Link to="/" className="flex items-center space-x-2 mb-4 w-[1px] h-[56px]">         
+            <Link to="/" className="flex items-center space-x-2 mb-4 w-[81px] h-[56px]">         
                            <img
                              src={logo}
                              alt="Dhamaka Deals Logo"
